@@ -1,0 +1,96 @@
+openapi: 3.0.0
+info:
+  title: DogRescue24 API
+  version: 1.0.0
+  description: API für die DogRescue24 Plattform
+  contact:
+    name: DogRescue24 Team
+    email: support@dogrescue24.de
+
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Lokaler Entwicklungsserver
+  - url: https://api.dogrescue24.de/v1
+    description: Produktionsserver
+
+paths:
+  /:
+    get:
+      summary: Homepage
+      description: initial home screen
+      responses:
+        '200':
+          description: 
+  /animals:
+    get:
+      summary: Liste aller Tiere abrufen
+      description: Gibt eine Liste aller zur Adoption stehenden Tiere zurück
+      parameters:
+        - name: page
+          in: query
+          description: Seitennummer für die Paginierung
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Anzahl der Einträge pro Seite
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Erfolgreiche Abfrage
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Animal'
+                  meta:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      page:
+                        type: integer
+                      limit:
+                        type: integer
+
+components:
+  schemas:
+    Animal:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        species:
+          type: string
+        breed:
+          type: string
+        age:
+          type: integer
+        description:
+          type: string
+        shelter_id:
+          type: integer
+          format: int64
+        status:
+          type: string
+          enum: [available, reserved, adopted]
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - name
+        - species
+        - shelter_id 
